@@ -9,7 +9,7 @@ class coreHTTP {
       }
 
       const data = await response.text();
-      console.log(`Get data: ${data}`);
+      // console.log(`GET data: ${data}`);
       callback(null, data);
     } catch (error) {
       callback(error.message);
@@ -61,22 +61,21 @@ class coreHTTP {
       callback(error.message);
     }
   }
-}
 
-// TODO: Migrate DELETE requests to the JavaScript Fetch API.
-// Below code are not yet changed.
+  /* <<< HTTP DELETE request >>> */
+  async delete(url, callback) {
+    // console.log(`Delete async ${url}`);
+    try {
+      const response = await fetch(url, {
+        method: "DELETE",
+      });
 
-/* <<< HTTP DELETE request >>> */
-coreHTTP.prototype.delete = function (url, callback) {
-  this.http.open("DELETE", url);
-
-  this.http.onload = () => {
-    if (this.http.status >= 200 && this.http.status <= 299) {
+      if (!response.ok) {
+        throw new Error(`DELETE Error: ${response.status}`);
+      }
       callback(null, "User Deleted");
-    } else {
-      callback(`DELETE Error: ${this.http.status}`);
+    } catch (error) {
+      callback(error.message);
     }
-  };
-
-  this.http.send();
-};
+  }
+}

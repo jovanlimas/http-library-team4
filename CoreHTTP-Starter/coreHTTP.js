@@ -9,7 +9,7 @@ class coreHTTP {
       }
 
       const data = await response.text();
-      //console.log(`GET data: ${data}`);
+      // console.log(`GET data: ${data}`);
       callback(null, data);
     } catch (error) {
       callback(error.message);
@@ -64,7 +64,7 @@ class coreHTTP {
 
   /* <<< HTTP DELETE request >>> */
   async delete(url, callback) {
-    console.log(`Delete async ${url}`);
+    // console.log(`Delete async ${url}`);
     try {
       const response = await fetch(url, {
         method: "DELETE",

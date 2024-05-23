@@ -1,5 +1,5 @@
 // Instantiate the object
-const http = new coreHTTP;
+const http = new coreHTTP();
 
 function ShowResponse(responseData) {
   let html = "<ul style='list-style:none'>";
@@ -7,9 +7,9 @@ function ShowResponse(responseData) {
   if (typeof responseData === "string") {
     html += `<li>${responseData}</li>`;
   } else if (Array.isArray(responseData)) {
-    responseData.forEach(user => {
+    responseData.forEach((user) => {
       html += `<li>User ${user.id} - ${user.name}</li>`;
-    })
+    });
   } else {
     html += `<li>User ${responseData.id} - ${responseData.name}</li>`;
   }
@@ -57,7 +57,6 @@ function ProcessDelete(err, respStr) {
 }
 
 function sendRequest(reqType, targetURL, data) {
-
   switch (reqType) {
     case "get": // Get users from the endpoint
       http.get(targetURL, ProcessGet);
@@ -70,7 +69,7 @@ function sendRequest(reqType, targetURL, data) {
       break;
     case "delete": // Delete user in the placeholder website
       http.delete(targetURL, ProcessDelete);
-      break;            
+      break;
   }
 }
 
@@ -78,9 +77,9 @@ function ValidId(id, required = false) {
   let isValid;
 
   if (id.length > 0) {
-    isValid = (Number.isInteger(Number(id)))
+    isValid = Number.isInteger(Number(id));
     if (isValid) {
-      isValid = ((Number(id) > 1 && Number(id) < 11));
+      isValid = Number(id) >= 1 && Number(id) < 11;
     }
   } else if (required) {
     isValid = false;
@@ -92,7 +91,7 @@ function ValidId(id, required = false) {
     document.querySelector("#uIdArea>input").style.border = "2px solid red";
     document.querySelector("#uIdArea>input").value = "err";
   }
-  
+
   return isValid;
 }
 
@@ -124,7 +123,7 @@ function SetupRequest() {
   let okToSend;
   if (reqType === "get") {
     document.querySelector("#uNameArea>input").value = "";
-    okToSend = (ValidId(document.querySelector("#uIdArea>input").value));
+    okToSend = ValidId(document.querySelector("#uIdArea>input").value);
   }
 
   if (reqType === "post") {
@@ -134,39 +133,44 @@ function SetupRequest() {
       let uName = uFullName.split(" ")[0].trim();
       let uMail = uName.concat("@spu.edu");
       data = {
-        name:`${uFullName}`,
-        username:`${uName}`,
-        email:`${uMail}`};
+        name: `${uFullName}`,
+        username: `${uName}`,
+        email: `${uMail}`,
+      };
       okToSend = true;
-    };
+    }
   }
 
   if (reqType === "put") {
     okToSend = false;
-    if (ValidId(document.querySelector("#uIdArea>input").value,true)) {
+    console.log(document.querySelector("#uIdArea>input").value);
+    if (ValidId(document.querySelector("#uIdArea>input").value, true)) {
       let uFullName = document.querySelector("#uNameArea>input").value;
       if (ValidName(uFullName)) {
         let uName = uFullName.split(" ")[0].trim();
         let uMail = uName.concat("@spu.edu");
         data = {
-          name:`${uFullName}`,
-          username:`${uName}`,
-          email:`${uMail}`};
+          name: `${uFullName}`,
+          username: `${uName}`,
+          email: `${uMail}`,
+        };
         okToSend = true;
-      };
+      }
     }
   }
 
   if (reqType === "delete") {
     document.querySelector("#uNameArea>input").value = "";
-    okToSend = (ValidId(document.querySelector("#uIdArea>input").value,true));
-  };
-  
+    okToSend = ValidId(document.querySelector("#uIdArea>input").value, true);
+  }
+
   if (okToSend) {
     route = route.concat(document.querySelector("#uIdArea>input").value);
-    document.querySelector("#uIdArea>input").style.border = "1px solid lightgrey";
-    document.querySelector("#uNameArea>input").style.border = "1px solid lightgrey";
-    sendRequest(reqType,route, data);
+    document.querySelector("#uIdArea>input").style.border =
+      "1px solid lightgrey";
+    document.querySelector("#uNameArea>input").style.border =
+      "1px solid lightgrey";
+    sendRequest(reqType, route, data);
     document.querySelector("#uIdArea>input").value = "";
     document.querySelector("#uNameArea>input").value = "";
   } else {
@@ -174,7 +178,7 @@ function SetupRequest() {
   }
 }
 
-// Listners for radio buttions
+// Listeners for radio buttons
 function SetupInput(reqType) {
   switch (reqType) {
     case "get":
@@ -200,21 +204,28 @@ function StartUp() {
   // Setup the initial inputs
   document.querySelector("#rbGet").checked = true;
   SetupInput("get");
-  
+
   // Add listeners for the radio buttons
-  document.querySelector("#rbGet").addEventListener("change", () => SetupInput("get"));
-  document.querySelector("#rbPost").addEventListener("change", () => SetupInput("post"));
-  document.querySelector("#rbPut").addEventListener("change", () => SetupInput("put"));
-  document.querySelector("#rbDelete").addEventListener("change", () => SetupInput("delete"));
+  document
+    .querySelector("#rbGet")
+    .addEventListener("change", () => SetupInput("get"));
+  document
+    .querySelector("#rbPost")
+    .addEventListener("change", () => SetupInput("post"));
+  document
+    .querySelector("#rbPut")
+    .addEventListener("change", () => SetupInput("put"));
+  document
+    .querySelector("#rbDelete")
+    .addEventListener("change", () => SetupInput("delete"));
 
   // Add the listener to the SEND button
   document.querySelector("#SendReq").addEventListener("click", (e) => {
     SetupRequest();
     e.preventDefault();
   });
-};
-
-window.onload = function() {
-  StartUp();
 }
 
+window.onload = function () {
+  StartUp();
+};

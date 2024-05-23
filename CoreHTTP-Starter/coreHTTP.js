@@ -9,8 +9,8 @@ class coreHTTP {
       }
 
       const data = await response.text();
+      console.log(`Get data: ${data}`);
       callback(null, data);
-
     } catch (error) {
       callback(error.message);
     }
@@ -23,9 +23,9 @@ class coreHTTP {
         method: "POST",
         body: JSON.stringify(data),
         headers: {
-          'Accept': 'application/json',
-          "Content-type": "application/json"
-        }
+          Accept: "application/json",
+          "Content-type": "application/json",
+        },
       });
 
       if (!response.ok) {
@@ -34,43 +34,49 @@ class coreHTTP {
 
       const responseData = await response.text();
       callback(null, responseData);
+    } catch (error) {
+      callback(error.message);
+    }
+  }
 
+  /* <<< HTTP PUT request >>> */
+  async put(url, data, callback) {
+    try {
+      const response = await fetch(url, {
+        method: "PUT",
+        body: JSON.stringify(data),
+        headers: {
+          Accept: "application/json",
+          "Content-type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`PUT Error: ${response.status}`);
+      }
+
+      const responseData = await response.text();
+      callback(null, responseData);
     } catch (error) {
       callback(error.message);
     }
   }
 }
 
-// TODO: Migrate PUT and DELETE requests to the JavaScript Fetch API.
+// TODO: Migrate DELETE requests to the JavaScript Fetch API.
 // Below code are not yet changed.
 
-/* <<< HTTP PUT request >>> */
-coreHTTP.prototype.put = function(url, data, callback) {
-  this.http.open("PUT", url);
-  this.http.setRequestHeader("content-type","application/json");
-
-  this.http.onload = () => {
-    if (this.http.status >= 200 && this.http.status <= 299) {
-      callback(null, this.http.responseText);
-    } else {
-      callback(`PUT Error: ${this.http.status}`);
-    }
-  }
-
-  this.http.send(JSON.stringify(data));
-}
-
 /* <<< HTTP DELETE request >>> */
-coreHTTP.prototype.delete = function(url, callback) {
+coreHTTP.prototype.delete = function (url, callback) {
   this.http.open("DELETE", url);
-  
+
   this.http.onload = () => {
     if (this.http.status >= 200 && this.http.status <= 299) {
       callback(null, "User Deleted");
     } else {
       callback(`DELETE Error: ${this.http.status}`);
     }
-  }
+  };
 
-  this.http.send();  
-}
+  this.http.send();
+};

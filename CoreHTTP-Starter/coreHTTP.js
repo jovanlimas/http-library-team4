@@ -9,7 +9,7 @@ class coreHTTP {
       }
 
       const data = await response.text();
-      console.log(`GET data: ${data}`);
+      //console.log(`GET data: ${data}`);
       callback(null, data);
     } catch (error) {
       callback(error.message);

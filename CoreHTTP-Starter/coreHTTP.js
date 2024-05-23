@@ -64,6 +64,7 @@ class coreHTTP {
 
   /* <<< HTTP DELETE request >>> */
   async delete(url, callback) {
+    console.log(`Delete async ${url}`);
     try {
       const response = await fetch(url, {
         method: "DELETE",

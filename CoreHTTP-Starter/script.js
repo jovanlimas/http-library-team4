@@ -56,6 +56,15 @@ function ProcessDelete(err, respStr) {
   }
 }
 
+function ProcessPatch(err, respStr) {
+  if (err) {
+    ShowError(err);
+  } else {
+    const respObj = JSON.parse(respStr);
+    ShowResponse(respObj);
+  }
+}
+
 function sendRequest(reqType, targetURL, data) {
   switch (reqType) {
     case "get": // Get users from the endpoint
@@ -69,6 +78,9 @@ function sendRequest(reqType, targetURL, data) {
       break;
     case "delete": // Delete user in the placeholder website
       http.delete(targetURL, ProcessDelete);
+      break;
+    case "patch":
+      http.patch(targetURL, data, ProcessPatch);
       break;
   }
 }
@@ -164,6 +176,20 @@ function SetupRequest() {
     okToSend = ValidId(document.querySelector("#uIdArea>input").value, true);
   }
 
+  if (reqType === "patch") {
+    okToSend = false;
+    console.log(document.querySelector("#uIdArea>input").value);
+    if (ValidId(document.querySelector("#uIdArea>input").value, true)) {
+      let uFullName = document.querySelector("#uNameArea>input").value;
+      if (ValidName(uFullName)) {
+        data = {
+          name: `${uFullName}`
+        };
+        okToSend = true;
+      }
+    }
+  }
+
   if (okToSend) {
     route = route.concat(document.querySelector("#uIdArea>input").value);
     document.querySelector("#uIdArea>input").style.border =
@@ -197,6 +223,9 @@ function SetupInput(reqType) {
       document.querySelector("#uIdArea").style.display = "flex";
       document.querySelector("#uNameArea").style.display = "none";
       break;
+    case "patch":
+      document.querySelector("#uIdArea").style.display = "flex";
+      document.querySelector("#uNameArea").style.display = "flex";
   }
 }
 
@@ -218,6 +247,9 @@ function StartUp() {
   document
     .querySelector("#rbDelete")
     .addEventListener("change", () => SetupInput("delete"));
+  document
+    .querySelector("#rbPatch")
+    .addEventListener("change", () => SetupInput("patch"));
 
   // Add the listener to the SEND button
   document.querySelector("#SendReq").addEventListener("click", (e) => {

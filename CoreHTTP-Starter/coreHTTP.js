@@ -78,4 +78,27 @@ class coreHTTP {
       callback(error.message);
     }
   }
+
+  /* <<< HTTP PATCH request >>> */
+  async patch(url, data, callback) {
+    try {
+      const response = await fetch(url, {
+        method: "PATCH",
+        body: JSON.stringify(data),
+        headers: {
+          Accept: "application/json",
+          "Content-type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`PATCH Error: ${response.status}`);
+      }
+
+      const responseData = await response.text();
+      callback(null, responseData);
+    } catch (error) {
+      callback(error.message);
+    }
+  }
 }
